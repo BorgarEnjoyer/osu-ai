@@ -1,4 +1,6 @@
-from ai.utils import FixedRuntime, get_models, get_validated_input, EModelType
+from ai.utils.utils import FixedRuntime, get_models, get_validated_input
+from ai.enums import EModelType
+
 from ai.eval import ActionsThread, AimThread, CombinedThread
 import traceback
 

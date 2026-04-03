@@ -7,7 +7,7 @@ import timm
 from typing import Callable
 from datetime import datetime
 from ai.constants import CURRENT_STACK_NUM, FINAL_PLAY_AREA_SIZE
-from ai.utils import refresh_model_list
+from ai.utils.utils import refresh_model_list
 from ai.enums import EModelType
 
 

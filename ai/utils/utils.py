@@ -178,13 +178,47 @@ def run_file(file_path: str):
     process.communicate()
     return process.returncode
 
-def derive_capture_params(window_width=1920, window_height=1080):
-    osu_play_field_ratio = 3 / 4
-    capture_height= int(window_height * CAPTURE_HEIGHT_PERCENT)
-    capture_width = int(capture_height / osu_play_field_ratio)
-    capture_params = [capture_width, capture_height,
-                      int((window_width - capture_width) / 2), int((window_height - capture_height) / 2)]
+def get_osu_window_rect():
+    """Get the actual osu! window position and size."""
+    import win32gui
+    def enum_handler(hwnd, result):
+        if win32gui.IsWindowVisible(hwnd):
+            cls = win32gui.GetClassName(hwnd)
+            if cls.startswith("WindowsForms10.Window"):
+                title = win32gui.GetWindowText(hwnd)
+                if "osu!" in title:
+                    result.append(win32gui.GetWindowRect(hwnd))
+    result = []
+    win32gui.EnumWindows(enum_handler, result)
+    return result[0] if result else None  # (left, top, right, bottom)
 
+
+def derive_capture_params(window_width=None, window_height=None, window_x=0, window_y=0):
+    # try to auto-detect osu window if no size given
+    if window_width is None or window_height is None:
+        rect = get_osu_window_rect()
+        if rect is not None:
+            window_x = rect[0]
+            window_y = rect[1]
+            window_width = rect[2] - rect[0]
+            window_height = rect[3] - rect[1]
+            print(f"[derive_capture_params] detected osu window: {window_width}x{window_height} at ({window_x},{window_y})")
+        else:
+            window_width = 1920
+            window_height = 1080
+            window_x = 0
+            window_y = 0
+            print("[derive_capture_params] could not detect osu window, defaulting to 1920x1080")
+
+    osu_play_field_ratio = 3 / 4
+    capture_height = int(window_height * CAPTURE_HEIGHT_PERCENT)
+    capture_width = int(capture_height / osu_play_field_ratio)
+    capture_params = [
+        capture_width,
+        capture_height,
+        window_x + int((window_width - capture_width) / 2),
+        window_y + int((window_height - capture_height) / 2)
+    ]
     return capture_params
 
 def playfield_coords_to_screen(playfield_x,playfield_y,screen_w=1920,screen_h=1080,account_for_capture_params = False):

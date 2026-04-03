@@ -7,7 +7,7 @@ from ai.dataset import OsuDataset
 import torchvision.transforms as transforms
 from ai.models import ActionsNet, AimNet, CombinedNet
 from torch.utils.data import DataLoader
-from ai.utils import get_datasets, get_validated_input, get_models
+from ai.utils.utils import get_datasets, get_validated_input, get_models
 from ai.constants import PYTORCH_DEVICE
 from ai.enums import EModelType
 

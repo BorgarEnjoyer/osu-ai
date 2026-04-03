@@ -7,7 +7,7 @@ from queue import Queue
 from threading import Thread, Event
 import shutil
 import os
-from ai.utils import Cv2VideoContext, EventsSampler, playfield_coords_to_screen, derive_capture_params
+from ai.utils.utils import Cv2VideoContext, EventsSampler, playfield_coords_to_screen, derive_capture_params
 from ai.constants import CAPTURE_HEIGHT_PERCENT
 
 
